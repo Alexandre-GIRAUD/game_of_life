@@ -4,12 +4,12 @@
 #include "grid.h"
 #include "cell.h"
 
-Cell **create_grid(char set[][18], int rows_set, int cols_set)
+Cell **create_grid(int set[][20], int rows_set, int cols_set)
 {
-
     // start the pattern at any place on the grid
-    int shift_x = rand() % (WIDTH - cols_set);
-    int shift_y = rand() % (LENGTH - rows_set);
+
+    int shift_x = rand() % (LENGTH - cols_set);
+    int shift_y = rand() % (WIDTH - rows_set);
     Cell **grid = malloc(LENGTH * sizeof(Cell *));
     for (int i = 0; i < LENGTH; i++)
         grid[i] = malloc(WIDTH * sizeof(Cell));
@@ -17,7 +17,7 @@ Cell **create_grid(char set[][18], int rows_set, int cols_set)
     {
         for (int j = 0; j < WIDTH; j++)
         {
-            Cell new_cell = create_cell(i, j, 0);
+            Cell new_cell = create_cell(i, j, 0); //Grid is initialized with dead cells
             grid[i][j] = new_cell;
         }
     }
@@ -26,7 +26,8 @@ Cell **create_grid(char set[][18], int rows_set, int cols_set)
     {
         for (int j = 0; j < cols_set; j++)
         {
-            Cell new_cell = create_cell(i, j, set[i][j]);
+            Cell new_cell = create_cell(i+shift_x, j+shift_y, set[i][j]); //add the alived cell on the grid
+
             grid[i + shift_x][j + shift_y] = new_cell;
         }
     }
@@ -35,14 +36,16 @@ Cell **create_grid(char set[][18], int rows_set, int cols_set)
 
 void display_grid(Cell **grid)
 {
+    //Print the grid in the shell
+
     for (int i = 0; i < WIDTH + 2; i++)
-    {
+    {  
         printf("-");
     }
     for (int i = 0; i < LENGTH; i++)
     {
         printf("\n");
-        printf("| ");
+        printf("%d| ",i);
         for (int j = 0; j < WIDTH; j++)
         {
             Cell c = grid[i][j];
@@ -65,12 +68,14 @@ void display_grid(Cell **grid)
     printf("\n");
 }
 
-Cell **update_grid(Cell **grid)
+void update_grid(Cell** grid)
 {
-    Cell **new_grid = malloc(LENGTH * sizeof(Cell *));
-    for (int i = 0; i < LENGTH; i++)
-        new_grid[i] = malloc(WIDTH * sizeof(Cell));
+    //Update the current state of the grid to the next generation of cells
 
+    Cell **new_grid = malloc(LENGTH * sizeof(Cell *));
+    for (int i = 0; i < LENGTH; i++){
+        new_grid[i] = malloc(WIDTH * sizeof(Cell));
+    }
     for (int i = 0; i < LENGTH; i++)
     {
         for (int j = 0; j < WIDTH; j++)
@@ -97,13 +102,17 @@ Cell **update_grid(Cell **grid)
 
 void simulate(Cell **grid)
 {
+    //Simulate the evolution of the initial cells' configuration 
+    
     int days = 0;
     printf("Grid at day 0: \n");
     display_grid(grid);
     while (1)
     {
+        days++;
         system("cls");
         printf("\n");
+        printf("Grid at day days: \n",days);
         update_grid(grid);
         display_grid(grid);
     }

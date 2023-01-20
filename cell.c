@@ -6,9 +6,9 @@
 Cell create_cell(int x, int y, int alive)
 {
     Cell c;
-    c.x = x;
-    c.y = y;
-    c.alive = alive;
+    c.x = x; //row position on the grid
+    c.y = y; //col position on the grid
+    c.alive = alive; //bool wheter a cell is alive (1) or dead (0)
     return c;
 }
 
@@ -26,29 +26,32 @@ void state_cell(Cell c)
 
 int survive(Cell **grid, Cell c)
 {
-    int moves[9][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}, {0, 0}};
-    int neighbors = 0;
-    int i = 0;
+    //Regarding the neighborhood of the cell, return True if the cell survive to till the next generation. False otherwise.
 
-    for (i = 0; i < 9; i++)
+    int moves[9][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}, {0, 0}}; //cell neighborhood
+    int neighbors = 0;
+    
+    for (int i = 0; i < 9; i++)
     {
         int neigh_row = c.x + moves[i][0];
         int neigh_col = c.y + moves[i][1];
-
-        if (neigh_row >= 0 && neigh_row < LENGTH && neigh_col >= 0 && neigh_col < WIDTH && grid[neigh_row][neigh_col].alive == 1)
+        
+        if (neigh_row >= 0 && neigh_row < LENGTH && neigh_col >= 0 && neigh_col < WIDTH && grid[neigh_row][neigh_col].alive)
         {
             neighbors += 1;
         }
     }
 
     int survive= 0;
-    if (grid[c.x][c.y].alive){
-        if(neighbors==2 || neighbors==3) {
+
+    if (c.alive==1){
+        if(neighbors==3 || neighbors==4) {//a cell will survive if she is alive and has 3 or 4 neighbors
             survive = 1;
         }
     }
     else{
-        if (neighbors==3){
+        
+        if (neighbors==3){ //or is dead and has exactly three neighbors
             survive=1;
         }
     }

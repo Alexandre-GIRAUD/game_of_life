@@ -3,26 +3,22 @@
 #include "cell.h"
 #include "grid.h"
 
+
 int main()
 {
     printf("-------------------------\nWelcome to Game Of Life\n(-------------------------\n");
 
     //Initial state of the simulation
-    int rows_input = 9, cols_input = 18;
-    char input[9][18] = {
-        {1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
-        {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0},
-        {0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0},
-        {0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1},
-        {0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0},
-        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0},
-        {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
-        {1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    };
+    int input_row = 20,input_col=20;
+    int input[input_row][input_col];
+    for (int i=0; i<input_row;i++){
+        for (int j=0; j<input_col;j++){
+            input[i][j] = rand()%2;
+        }
+    }
 
     //Grid (LENGTH*WIDTH) creation and set is randomly placed
-    Cell **grid = create_grid(input, rows_input, cols_input);
+    Cell **grid = create_grid(input, input_row, input_col);
 
     //run simulation
     simulate(grid);
