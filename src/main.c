@@ -7,6 +7,7 @@ int main()
 {
     printf("-------------------------\nWelcome to Game Of Life\n(-------------------------\n");
 
+    /*
     // Initial state of the simulation
     int input_row = 20, input_col = 20;
     int input[input_row][input_col];
@@ -17,9 +18,9 @@ int main()
             input[i][j] = rand() % 2;
         }
     }
-
+    */
     // Grid (LENGTH*WIDTH) creation and set is randomly placed
-    Cell **grid = create_grid(input, input_row, input_col);
+    Cell **grid = create_grid();
 
     // run simulation
     simulate(grid);

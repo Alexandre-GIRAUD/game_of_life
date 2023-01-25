@@ -4,33 +4,39 @@
 #include "grid.h"
 #include "cell.h"
 
-Cell **create_grid(int set[][20], int rows_set, int cols_set)
+Cell **create_grid(void)
 {
     // start the pattern at any place on the grid
 
-    int shift_x = rand() % (LENGTH - cols_set);
-    int shift_y = rand() % (WIDTH - rows_set);
+    int shift_x = rand() % (LENGTH - COLONY_LENGTH);
+    int shift_y = rand() % (WIDTH - COLONY_WIDTH);
+
+    //Lock memory for the grid
     Cell **grid = malloc(LENGTH * sizeof(Cell *));
     for (int i = 0; i < LENGTH; i++)
+    {
         grid[i] = malloc(WIDTH * sizeof(Cell));
+    }
+
+    //Initialize the grid
     for (int i = 0; i < LENGTH; i++)
     {
         for (int j = 0; j < WIDTH; j++)
         {
-            Cell new_cell = create_cell(i, j, 0); // Grid is initialized with dead cells
+            Cell new_cell;
+            if (i>=shift_x && i<shift_x + COLONY_LENGTH && j>=shift_y && j<=shift_y+COLONY_WIDTH)
+            {
+                new_cell = create_cell(i, j, rand() % 2);
+            }
+            else 
+            {
+                new_cell = create_cell(i, j, 0); // Grid is initialized with dead cells
+            }
+            
             grid[i][j] = new_cell;
         }
     }
 
-    for (int i = 0; i < rows_set; i++)
-    {
-        for (int j = 0; j < cols_set; j++)
-        {
-            Cell new_cell = create_cell(i + shift_x, j + shift_y, set[i][j]); // add the alived cell on the grid
-
-            grid[i + shift_x][j + shift_y] = new_cell;
-        }
-    }
     return grid;
 }
 

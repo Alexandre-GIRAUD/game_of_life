@@ -1,21 +1,19 @@
 CC = gcc
 EXEC = game_of_life
+DEP = src/grid.c src/cell.c
 
-all : $(EXEC)
+all : bin/$(EXEC) bin/client bin/server
 
-$(EXEC): main.o grid.o cell.o global.o
-	$(CC) -o $(EXEC) main.o cell.o grid.o global.o
+bin/$(EXEC): src/main.c src/grid.c src/cell.c 
+	$(CC) -I include -o bin/$(EXEC) src/main.c $(DEP) 
 
-main.o: main.c 
-	$(CC) -o main.o main.c
+bin/client: src/client.c $(DEP) 
+	$(CC) -I include -o bin/client src/client.c $(DEP) -lws2_32
 
-grid.o: grid.c 
-	$(CC) -o grid.o grid.c 
-
-cell.o: cell.c 
-	$(CC) -o cell.o cell.c 
+bin/server: src/server.c $(DEP) 
+	$(CC) -I include -o bin/server src/server.c $(DEP) -lws2_32
 
 clean : 
 	@echo "clean project"
-    -rm -f $(EXEC).exe *.o
-    @echo "clean completed"
+	-rm -f bin/$(EXEC) obj/*.o
+	@echo "clean completed"
