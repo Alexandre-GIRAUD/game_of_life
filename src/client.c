@@ -26,10 +26,28 @@ int main(void)
     // send how many evolution steps you want to see
     int steps = 0;
     char msg[48];
-    recv(sock, msg, 48, 0);
-    printf("%s", msg);
+    int result = recv(sock, msg, 48, 0);
+    if (result > 0)
+    {
+        printf("%s", msg);
+    }
+    else
+    {
+        printf("recv failed: %d\n", WSAGetLastError());
+        closesocket(sock);
+        WSACleanup();
+        return 1;
+    }
     scanf("%d", &steps);
-    send(sock, (void *)&steps, sizeof(int), 0);
+
+    result = send(sock, (void *)&steps, sizeof(int), 0);
+    if (result == SOCKET_ERROR)
+    {
+        printf("send failed: %d\n", WSAGetLastError());
+        closesocket(sock);
+        WSACleanup();
+        return 1;
+    }
 
     // Receive the 2D array from the server
     Cell **grid = create_grid();
@@ -41,13 +59,23 @@ int main(void)
             for (j = 0; j < WIDTH; j++)
             {
                 int state;
-                recv(sock, (void *)&state, sizeof(int), 0);
+                if (recv(sock, (void *)&state, sizeof(int), 0) == SOCKET_ERROR)
+                {
+                    printf("Error receiving steps: %d\n", WSAGetLastError());
+                    closesocket(sock);
+                    return 1;
+                }
                 grid[i][j].alive = ntohl(state);
             }
         }
         display_grid(grid);
     }
-    
+
+    // Free grid
+    for (int i = 0; i < LENGTH; i++)
+        free(grid[i]);
+    free(grid);
+
     closesocket(sock);
     WSACleanup();
     WSACleanup();
