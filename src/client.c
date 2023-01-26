@@ -2,38 +2,52 @@
 #include <stdio.h>
 #include "grid.h"
 
-
 int main(void)
 {
     WSADATA WSAData;
-    WSAStartup(MAKEWORD(2,0), &WSAData);
+    WSAStartup(MAKEWORD(2, 0), &WSAData);
     SOCKET sock;
     SOCKADDR_IN sin;
 
-    //socket technical information
-    sin.sin_addr.s_addr    = inet_addr("127.0.0.1"); //public address here
-    sin.sin_family        = AF_INET;
-    sin.sin_port        = htons(4148);
+    // socket technical information
+    sin.sin_addr.s_addr = inet_addr("127.0.0.1"); // public address here
+    sin.sin_family = AF_INET;
+    sin.sin_port = htons(4148);
 
-    //socket creation and binding
-    sock = socket(AF_INET,SOCK_STREAM,0);
+    // socket creation and binding
+    sock = socket(AF_INET, SOCK_STREAM, 0);
     bind(sock, (SOCKADDR *)&sin, sizeof(sin));
 
-    //connexion
+    // connexion
     connect(sock, (SOCKADDR *)&sin, sizeof(sin));
 
     printf("Connected\n");
+
+    // send how many evolution steps you want to see
+    int steps = 0;
+    char msg[48];
+    recv(sock, msg, 48, 0);
+    printf("%s", msg);
+    scanf("%d", &steps);
+    send(sock, (void *)&steps, sizeof(int), 0);
+
     // Receive the 2D array from the server
     Cell **grid = create_grid();
     int i, j;
-    for (i = 0; i < LENGTH; i++) {
-        for (j = 0; j < WIDTH; j++) {
-            int state;
-            recv(sock, (void *)&state, sizeof(int), 0);
-            grid[i][j].alive = ntohl(state);
+    for (int s = 0; s < steps; s++)
+    {
+        for (i = 0; i < LENGTH; i++)
+        {
+            for (j = 0; j < WIDTH; j++)
+            {
+                int state;
+                recv(sock, (void *)&state, sizeof(int), 0);
+                grid[i][j].alive = ntohl(state);
+            }
         }
+        display_grid(grid);
     }
-    display_grid(grid);
+    
     closesocket(sock);
     WSACleanup();
     WSACleanup();
