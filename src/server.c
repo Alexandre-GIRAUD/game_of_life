@@ -78,7 +78,7 @@ int main(void)
     // connexion
     SOCKET csock;
     SOCKADDR_IN csin;
-    listen(sock, 3);
+    listen(sock, 3); //define the max size queue of clients
 
     // Thread for multiple clients
     pthread_t clientThread;
